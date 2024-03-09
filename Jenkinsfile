@@ -16,14 +16,14 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                sh 'rm -rf assignment-docker' 
-                sh 'git clone "https://github.com/tarundanda147/assignment-docker.git"'
+                sh 'rm -rf destroy_Assignment' 
+                sh 'git clone "https://github.com/tarundanda147/destroy_Assignment.git"'
             }
         }
 
         stage('Terraform Init') {
             steps {
-                dir('assignment-docker/terraform') {
+                dir('destroy_Assignment/terraform') {
                     script {
                         sh 'terraform init'
                     }
@@ -33,7 +33,7 @@ pipeline {
 
         stage('Terraform Plan') {
             steps {
-                dir('assignment-docker/terraform') {
+                dir('destroy_Assignment/terraform') {
                     script {
                         sh "terraform plan -input=false -out=tfplan"
                         sh 'terraform show -no-color tfplan > tfplan.txt'
@@ -61,7 +61,7 @@ pipeline {
                 not { equals expected: true, actual: params.destroy }
             }
             steps {
-                dir('assignment-docker/terraform') {
+                dir('destroy_Assignment/terraform') {
                     sh 'terraform apply -input=false tfplan'
                 }
             }
@@ -74,7 +74,7 @@ pipeline {
             steps {
                 input message: 'Do you want to destroy the infrastructure?',
                       ok: 'Destroy'
-                dir('assignment-docker/terraform') {
+                dir('destroy_Assignment/terraform') {
                     sh 'terraform destroy -auto-approve'
                 }
             }
